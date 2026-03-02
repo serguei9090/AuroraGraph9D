@@ -1,0 +1,27 @@
+[project]
+name = "auroragraph9d"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dash>=4.0.0",
+    "networkx>=3.6.1",
+    "numpy>=2.4.2",
+    "ollama>=0.6.1",
+    "plotly>=6.5.2",
+    "pymupdf>=1.27.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.4",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = []
