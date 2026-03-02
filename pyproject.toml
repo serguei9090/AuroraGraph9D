@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "dash>=4.0.0",
+    "evaluate>=0.4.6",
     "networkx>=3.6.1",
     "numpy>=2.4.2",
     "ollama>=0.6.1",
@@ -16,6 +17,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pandas>=2.3.0",
+    "pytest>=8.4.1",
     "ruff>=0.15.4",
 ]
 

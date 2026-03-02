@@ -1,0 +1,177 @@
+[
+  {
+    "id": "HIST-001",
+    "category": "history_exact_fact",
+    "query": "When did the Western Roman Empire fall and who deposed the last emperor?",
+    "expected_keywords": ["Romulus Augustulus", "Odoacer", "476"],
+    "ground_truth": "The Western Roman Empire fell on September 4, 476 AD when Germanic chieftain Odoacer deposed Romulus Augustulus, who was 16 years old."
+  },
+  {
+    "id": "HIST-002",
+    "category": "history_exact_fact",
+    "query": "What ransom did Alaric demand during the Sack of Rome in 410 AD?",
+    "expected_keywords": ["Alaric", "gold", "silver", "pepper"],
+    "ground_truth": "Alaric demanded 5,000 pounds of gold, 30,000 pounds of silver, 4,000 silken tunics, 3,000 hides dyed scarlet, and 3,000 pounds of pepper."
+  },
+  {
+    "id": "HIST-003",
+    "category": "history_exact_fact",
+    "query": "What was the population and GDP of the Roman Empire at its peak under Trajan?",
+    "expected_keywords": ["Trajan", "70 million", "43.4 billion"],
+    "ground_truth": "Under Emperor Trajan (98-117 AD), the Roman Empire had a GDP equivalent of $43.4 billion and a population of approximately 70 million people, with Rome housing roughly 1.2 million inhabitants."
+  },
+  {
+    "id": "HIST-004",
+    "category": "history_exact_fact",
+    "query": "How did the Fall of Constantinople happen and when?",
+    "expected_keywords": ["Constantinople", "1453", "Mehmed", "53-day"],
+    "ground_truth": "Constantinople fell on May 29, 1453 when Ottoman Sultan Mehmed II conquered the city after a 53-day siege using cannons that fired 600-pound stone balls."
+  },
+  {
+    "id": "HIST-005",
+    "category": "history_exact_fact",
+    "query": "What was the Edict on Maximum Prices and who enacted it?",
+    "expected_keywords": ["Diocletian", "301 AD", "1,200", "prices"],
+    "ground_truth": "Emperor Diocletian enacted the Edict on Maximum Prices in 301 AD, setting fixed prices for over 1,200 goods and services. The penalty for exceeding these prices was death."
+  },
+  {
+    "id": "MATH-001",
+    "category": "math_exact_value",
+    "query": "What is the exact value of the Golden Ratio phi?",
+    "expected_keywords": ["Golden Ratio", "1.6180339887", "phi"],
+    "ground_truth": "The Golden Ratio phi equals (1 + sqrt(5)) / 2, approximately 1.6180339887."
+  },
+  {
+    "id": "MATH-002",
+    "category": "math_exact_value",
+    "query": "What is the compound interest result for $10,000 at 7.5% compounded monthly for 20 years?",
+    "expected_keywords": ["compound interest", "44,677.44", "34,677.44"],
+    "ground_truth": "Investing $10,000 at 7.5% annual interest compounded monthly for 20 years yields $44,677.44. The total interest earned is $34,677.44."
+  },
+  {
+    "id": "MATH-003",
+    "category": "math_exact_value",
+    "query": "What is the average speed for a round trip if a train goes 120 km/h one way and 80 km/h back with a 240 km distance?",
+    "expected_keywords": ["96 km/h", "average speed", "round trip"],
+    "ground_truth": "The average speed is 96 km/h (480 total km / 5 hours), NOT the arithmetic mean of 100 km/h."
+  },
+  {
+    "id": "MATH-004",
+    "category": "math_exact_value",
+    "query": "Who discovered Euler's number and when? What is its value?",
+    "expected_keywords": ["Euler", "Bernoulli", "1683", "2.7182818284"],
+    "ground_truth": "Euler's number e equals approximately 2.7182818284. It was first discovered by Jacob Bernoulli in 1683 while studying compound interest."
+  },
+  {
+    "id": "MATH-005",
+    "category": "math_exact_value",
+    "query": "What is the probability example for Bayes' Theorem about disease testing?",
+    "expected_keywords": ["Bayes", "0.98%", "1 in 10,000", "99%"],
+    "ground_truth": "If a disease affects 1 in 10,000 people and a test is 99% accurate, a positive result only gives a 0.98% chance of actually having the disease."
+  },
+  {
+    "id": "CODE-001",
+    "category": "code_specific_fact",
+    "query": "Who wrote the Gang of Four Design Patterns book and what is its ISBN?",
+    "expected_keywords": ["Gang of Four", "Gamma", "Helm", "Johnson", "Vlissides", "0-201-63361-2"],
+    "ground_truth": "The Gang of Four (Gamma, Helm, Johnson, and Vlissides) published 'Design Patterns: Elements of Reusable Object-Oriented Software' in 1994 by Addison-Wesley with ISBN 0-201-63361-2."
+  },
+  {
+    "id": "CODE-002",
+    "category": "code_specific_fact",
+    "query": "What are the Netflix microservices migration details and results?",
+    "expected_keywords": ["Netflix", "2009", "2012", "700", "99.99%"],
+    "ground_truth": "Netflix migrated from monolith to microservices from 2009 to 2012, growing to over 700 microservices. Deployment frequency went from weekly to thousands per day, and availability improved from 99.7% to 99.99%."
+  },
+  {
+    "id": "CODE-003",
+    "category": "code_specific_fact",
+    "query": "What is the default maxListeners limit in Node.js EventEmitter?",
+    "expected_keywords": ["maxListeners", "10", "Node.js", "Observer"],
+    "ground_truth": "The default maxListeners in Node.js EventEmitter is 10. Exceeding it triggers a MaxListenersExceededWarning."
+  },
+  {
+    "id": "CODE-004",
+    "category": "code_specific_fact",
+    "query": "How many disk reads does a B-tree index need for 10 million rows?",
+    "expected_keywords": ["B-tree", "3-4", "10 million", "500"],
+    "ground_truth": "A B-tree index lookup for 10 million rows typically requires 3-4 disk reads. A B-tree with branching factor 500 can store 500 million keys in 3 levels."
+  },
+  {
+    "id": "CODE-005",
+    "category": "code_specific_fact",
+    "query": "When was the Python decorator syntax introduced and what PEP defined it?",
+    "expected_keywords": ["PEP 318", "September 2, 2004", "decorator"],
+    "ground_truth": "Python decorator syntax (@decorator) was introduced in PEP 318, accepted on September 2, 2004."
+  },
+  {
+    "id": "SEC-001",
+    "category": "security_technical",
+    "query": "What are the key sizes and number of rounds for AES encryption?",
+    "expected_keywords": ["AES", "128-bit", "192-bit", "256-bit", "10", "12", "14"],
+    "ground_truth": "AES supports 128-bit (10 rounds), 192-bit (12 rounds), and 256-bit (14 rounds). AES-256 is used for TOP SECRET classified information."
+  },
+  {
+    "id": "SEC-002",
+    "category": "security_technical",
+    "query": "What was the Log4Shell vulnerability and what versions were affected?",
+    "expected_keywords": ["Log4Shell", "CVE-2021-44228", "CVSS 10.0", "2.14.1"],
+    "ground_truth": "Log4Shell (CVE-2021-44228), discovered December 9, 2021, affected Log4j versions 2.0-beta9 through 2.14.1 with a CVSS score of 10.0. Over 35,863 Java packages (8% of Maven Central) were affected. Fixed in 2.15.0."
+  },
+  {
+    "id": "SEC-003",
+    "category": "security_technical",
+    "query": "What improvements did TLS 1.3 bring over TLS 1.2?",
+    "expected_keywords": ["TLS 1.3", "RFC 8446", "1-RTT", "0-RTT"],
+    "ground_truth": "TLS 1.3 (RFC 8446, August 10, 2018) reduced handshake from 2 round trips to 1-RTT, added 0-RTT resumption, removed RSA key transport, static DH, compression, and RC4. Only AEAD ciphers allowed."
+  },
+  {
+    "id": "SEC-004",
+    "category": "security_technical",
+    "query": "What was the Morris Worm and how many computers did it infect?",
+    "expected_keywords": ["Morris Worm", "1988", "6,000", "buffer overflow"],
+    "ground_truth": "The Morris Worm of November 2, 1988 was the first major buffer overflow exploit, infecting approximately 6,000 computers (10% of the internet at that time)."
+  },
+  {
+    "id": "SEC-005",
+    "category": "security_technical",
+    "query": "What are the NIST password recommendations from SP 800-63B?",
+    "expected_keywords": ["NIST", "800-63B", "8 characters", "64 characters"],
+    "ground_truth": "NIST SP 800-63B recommends: minimum 8 characters for user passwords, minimum 6 for random passwords, max at least 64 characters, no composition rules, check against 100,000 common passwords, no forced rotation unless compromise evidence."
+  },
+  {
+    "id": "NEG-001",
+    "category": "negative_knowledge",
+    "query": "What does the document say about quantum computing encryption?",
+    "expected_keywords": ["quantum"],
+    "ground_truth": "The documents do NOT contain information about quantum computing. The system must refuse to answer rather than hallucinate facts about quantum encryption."
+  },
+  {
+    "id": "NEG-002",
+    "category": "negative_knowledge",
+    "query": "Describe the machine learning algorithms discussed in the documents.",
+    "expected_keywords": ["machine learning"],
+    "ground_truth": "The documents do NOT contain information about machine learning algorithms. The system must state that no relevant information was found."
+  },
+  {
+    "id": "CROSS-001",
+    "category": "cross_document",
+    "query": "What specific dates and events are mentioned across all documents in 1988 and 1994?",
+    "expected_keywords": ["1988", "1994", "Morris Worm", "Gang of Four"],
+    "ground_truth": "In 1988: The Morris Worm (November 2, 1988) was the first buffer overflow exploit. In 1994: The Gang of Four published Design Patterns book."
+  },
+  {
+    "id": "CROSS-002",
+    "category": "cross_document",
+    "query": "What security-related numbers and statistics appear across the documents?",
+    "expected_keywords": ["134 million", "35,863", "4.35 million"],
+    "ground_truth": "The Heartland breach exposed 134 million credit cards. Log4Shell affected 35,863 Java packages. Buffer overflow incidents cost $4.35 million each on average."
+  },
+  {
+    "id": "CROSS-003",
+    "category": "cross_document",
+    "query": "What historical dates and mathematical facts are mentioned about Archimedes?",
+    "expected_keywords": ["Archimedes", "287-212 BC", "pi", "3.1408"],
+    "ground_truth": "Archimedes of Syracuse (287-212 BC) calculated pi to be between 3.1408 and 3.1429 using a 96-sided polygon."
+  }
+]
