@@ -12,6 +12,7 @@ TARGET_FILE = os.path.join(LARGE_DOCS_DIR, "shakespeare_complete_works.txt")
 # URL for Project Gutenberg's Complete Works of William Shakespeare (~5.5 MB)
 URL = "https://www.gutenberg.org/cache/epub/100/pg100.txt"
 
+
 def download_file():
     if os.path.exists(TARGET_FILE):
         print(f"File already exists: {TARGET_FILE}")
@@ -24,6 +25,7 @@ def download_file():
         print(f"Download complete! Saved to {TARGET_FILE} ({size_mb:.2f} MB)")
     except Exception as e:
         print(f"Failed to download file: {e}")
+
 
 if __name__ == "__main__":
     download_file()

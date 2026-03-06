@@ -46,6 +46,7 @@ def _ask_judge(prompt: str) -> dict:
 
 # ─── Metric 1: Context Relevance ─────────────────────────────────────────────
 
+
 def score_context_relevance(query: str, context: list[str]) -> dict:
     """
     Grades whether the retrieved context is relevant to the user query.
@@ -74,6 +75,7 @@ Respond ONLY with JSON:
 
 
 # ─── Metric 2: Faithfulness (Groundedness) ────────────────────────────────────
+
 
 def score_faithfulness(response: str, context: list[str]) -> dict:
     """
@@ -109,6 +111,7 @@ Respond ONLY with JSON:
 
 # ─── Metric 3: Answer Relevance ──────────────────────────────────────────────
 
+
 def score_answer_relevance(query: str, response: str) -> dict:
     """
     Grades whether the generated answer directly addresses the user query.
@@ -140,6 +143,7 @@ Respond ONLY with JSON:
 
 # ─── Full Evaluation ─────────────────────────────────────────────────────────
 
+
 def evaluate_prediction(prediction: dict) -> dict:
     """
     Run all three RAG Triad metrics against a single prediction.
@@ -151,6 +155,7 @@ def evaluate_prediction(prediction: dict) -> dict:
         dict with scores and an overall weighted average.
     """
     import time
+
     start_judge = time.time()
 
     query = prediction["query"]
@@ -163,9 +168,7 @@ def evaluate_prediction(prediction: dict) -> dict:
 
     # Weighted average: faithfulness is the most critical metric
     overall = round(
-        ctx_rel["score"] * 0.30
-        + faith["score"] * 0.40
-        + ans_rel["score"] * 0.30,
+        ctx_rel["score"] * 0.30 + faith["score"] * 0.40 + ans_rel["score"] * 0.30,
         3,
     )
 

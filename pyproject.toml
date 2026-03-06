@@ -1,32 +1,115 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
 [project]
-name = "auroragraph9d"
+name = "auragraph-10d"
 version = "0.1.0"
-description = "Add your description here"
+description = "High-Performance 10D Knowledge Graph & Deterministic Reasoning Engine with Rust Core"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "dash>=4.0.0",
-    "evaluate>=0.4.6",
-    "networkx>=3.6.1",
-    "numpy>=2.4.2",
-    "ollama>=0.6.1",
-    "plotly>=6.5.2",
-    "pymupdf>=1.27.1",
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "AuroraGraph Contributors" }]
+keywords = ["knowledge-graph", "rag", "graphrag", "llm", "nlp", "rust", "neo4j", "kuzu"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/serguei9090/AuroraGraph9D"
+Repository = "https://github.com/serguei9090/AuroraGraph9D"
+"Bug Tracker" = "https://github.com/serguei9090/AuroraGraph9D/issues"
+Changelog = "https://github.com/serguei9090/AuroraGraph9D/blob/main/CHANGELOG.md"
+
+[project.scripts]
+auragraph = "auragraph.cli:main"
+
+[project.optional-dependencies]
+# Minimal: SQLite-only mode (fastest install, no heavy deps)
+sqlite = [
     "python-dotenv>=1.2.2",
+    "prometheus-client>=0.20.0",
+    "fastapi>=0.110.0",
+    "spacy>=3.8.11",
+    "gliner>=0.2.25",
+]
+# Add Kùzu embedded graph support
+kuzu = [
+    "auragraph-10d[sqlite]",
+    "kuzu>=0.11.3",
+    "networkx>=3.6.1",
+]
+# Add Neo4j cluster support
+neo4j = [
+    "auragraph-10d[sqlite]",
+    "neo4j>=6.1.0",
+]
+# PyTorch-based embeddings (CPU, large install ~2GB)
+embeddings = [
+    "sentence-transformers>=5.2.3",
+    "numpy>=2.4.2",
     "scipy>=1.17.1",
+]
+# Rust+ONNX embeddings (CPU, lightweight ~100MB, recommended)
+fastembed = ["fastembed>=0.4.0"]
+# Rust+ONNX embeddings with NVIDIA GPU — works on Windows out of the box!
+# pip install auragraph-10d[cuda]
+cuda = ["fastembed-gpu>=0.4.0"]
+# Apple Silicon GPU via CoreML (macOS only)
+mps = ["fastembed>=0.4.0"]
+# Add PDF parsing support
+pdf = ["pymupdf>=1.27.1"]
+# MCP agent server
+mcp = ["mcp>=1.26.0"]
+# Visualization (Plotly + Dash)
+viz = ["plotly>=6.5.2", "dash>=4.0.0"]
+# Full install: everything
+all = [
+    "auragraph-10d[kuzu,neo4j,embeddings,pdf,mcp,viz]",
+    "ollama>=0.6.1",
 ]
 
 [dependency-groups]
 dev = [
     "pandas>=2.3.0",
     "pytest>=8.4.1",
+    "pytest-cov>=4.1.0",
     "ruff>=0.15.4",
+    "requests>=2.32.0",
+    "httpx>=0.27.0",
+    "maturin>=1.12.6",
+    "lefthook>=2.1.2",
 ]
 
+[tool.maturin]
+# python-source tells Maturin where the pure-Python package lives
+python-source = "src"
+# module-name must match the package namespace so the .pyd/.so
+# is placed inside auragraph/ rather than at the top-level
+module-name = "auragraph.auragraph_core"
+features = ["pyo3/extension-module"]
+
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
-ignore = []
+ignore = ["E501", "E701"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+

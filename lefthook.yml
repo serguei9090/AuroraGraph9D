@@ -4,3 +4,6 @@ pre-commit:
     python-quality:
       glob: "*.py"
       run: uv run ruff check --fix {staged_files} && uv run ruff format {staged_files}
+    rust-quality:
+      glob: "*.rs"
+      run: cargo fmt -- {staged_files} && cargo clippy --fix --allow-dirty -- -D warnings

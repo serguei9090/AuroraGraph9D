@@ -26,12 +26,12 @@ Retrieval relies 100% on FTS5 BM25 exact keyword matching, augmented by Porter S
 - Use SQLite's `vss` (Vector Search) extension or purely maintain an in-memory index like FAISS.
 - Run queries through both Vector Search (high recall) and FTS5 (high precision), and use Cross-Encoder Reciprocal Rank Fusion (RRF) to blend the context blocks.
 
-## 4. Query Expansion via LLM
+## 4. Query Expansion (Agent/MCP Driven)
 **Current State:** 
-The query processing is rudimentary. It strips hardcoded stop words (`what`, `were`, `done`, `time`, etc.) and does an `AND/OR` FTS5 SQL query. Complex questions often fail the `AND` condition immediately.
+The core engine strips hardcoded stop words (`what`, `were`, `done`, `time`, etc.) and performs basic keyword/vector matching. Baking an LLM into the retrieval path makes the library slow and tightly coupled.
 **Proposed Improvement:**
-- Introduce a lightning-fast "Query Rewriter" step using a smaller LLM (e.g., `llama3.2:3b`) to convert the user's conversational query into 3-4 optimized Boolean keyword formulas.
-- Example: *"What were the reasons for the hardware margin drop?"* -> rewritten internally as -> `(hardware OR hardware margin) AND (shrink OR shrink margin OR drop)`
+- **Remove from Core**: Do not force LLM query rewriting inside the database retrieval logic. AuroraGraph should remain a high-speed, agnostic 10D retrieval mechanism.
+- **MCP Server Logic**: Instead, implement Query Expansion as an instruction prompt or logic step within the future **AuroraGraph MCP Server**. The calling agent analyzing the user's intent should be responsible for parallelizing expanded search queries to the engine (e.g., calling `search("hardware margins")` and `search("revenue drop")` based on its own reasoning).
 
 ## 5. Streaming UI for Generation
 **Current State:** 

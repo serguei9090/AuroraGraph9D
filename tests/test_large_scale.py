@@ -3,11 +3,12 @@ import sys
 import time
 
 import pytest
-import sqlite3
 
 # Ensure `src/` is importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-from main import AuraGraphJIT
+from auragraph.core.engine import AuroraGraphEngine
+from auragraph.db.sqlite import SQLiteFTS5DB
+from auragraph.providers.llm.ollama import OllamaProvider
 
 LARGE_DOCS_DIR = os.path.join(os.path.dirname(__file__), "test_docs_large")
 EVAL_LARGE_DB_PATH = os.path.join(os.path.dirname(__file__), "eval_large.db")
@@ -29,9 +30,19 @@ def large_aura():
         except PermissionError:
             print(f"[!] Reusing existing DB {EVAL_LARGE_DB_PATH} because it is locked.")
 
-    # Instantiate the JIT Engine
-    engine = AuraGraphJIT(db_path=EVAL_LARGE_DB_PATH, model_name=None)
-    
+    from auragraph.core.config import config
+
+    # Instantiate the JIT Engine with DI
+    if config.AURA_DB_PROVIDER == "neo4j":
+        from auragraph.db.neo4j import Neo4jDB
+
+        db_provider = Neo4jDB(config.NEO4J_URI, config.NEO4J_USER, config.NEO4J_PASSWORD)
+    else:
+        db_provider = SQLiteFTS5DB(db_path=EVAL_LARGE_DB_PATH)
+
+    llm_provider = OllamaProvider(model_name=config.AURA_MODEL)
+    engine = AuroraGraphEngine(db=db_provider, llm=llm_provider)
+
     # Time the exact ingestion speed for the massive directory
     start_t = time.time()
     engine.ingest_folder(LARGE_DOCS_DIR)
@@ -47,21 +58,21 @@ def large_aura():
 
 def test_large_file_retrieval_speed(large_aura):
     """
-    Queries for a very specific phrase buried inside the massive 5.5MB 
+    Queries for a very specific phrase buried inside the massive 5.5MB
     Complete Works of William Shakespeare text to benchmark FTS5 snippet extraction.
     """
     query = "What is the specific quote about a horse by Richard III?"
-    
+
     # We only care about the programmatic predict() speeds for retrieval
-    # Note: the generative LLM step takes a long time, but we are benching 
+    # Note: the generative LLM step takes a long time, but we are benching
     # the SQLite FTS5 index 'retrieval_ms' here.
     prediction = large_aura.predict(query)
-    
+
     assert len(prediction["context"]) > 0, "Failed to retrieve context from the massive file!"
-    
+
     print(f"\n[BENCHMARK] Massive File Retrieval Speed: {prediction['retrieval_ms']:.2f} ms")
     print(f"[BENCHMARK] FTS5 found {len(prediction['context'])} highly relevant context blocks.")
-    
+
     # Assert FTS5 Retrieval is still blazing fast even with a 5.5MB file (e.g. under 50ms)
     assert prediction["retrieval_ms"] < 50.0, f"Retrieval took too long: {prediction['retrieval_ms']}ms"
 

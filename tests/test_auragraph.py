@@ -13,8 +13,9 @@ Usage:
 import csv
 import datetime
 import json
-import sys
 import os
+import sys
+
 import pytest
 
 # Add the current directory to sys.path so we can import eval_engine
@@ -26,7 +27,7 @@ REPORT_DIR = os.path.join(os.path.dirname(__file__), "..", "reports")
 RESULTS_CACHE: list[dict] = []
 
 # --- Minimum Passing Thresholds ----------------------------------------------
-# We set these to 0.0 initially so the report generates even if the system 
+# We set these to 0.0 initially so the report generates even if the system
 # hasn't been tuned yet. Raise these as you improve your data.
 MIN_CONTEXT_RELEVANCE = 0.0
 MIN_FAITHFULNESS = 0.0
@@ -35,6 +36,7 @@ MIN_OVERALL = 0.0
 
 
 # --- Parametrised Test: One Per Golden Dataset Entry -------------------------
+
 
 def _load_golden():
     """Load test cases for parametrize (called at collection time)."""
@@ -71,7 +73,7 @@ def test_auragraph_evaluation(aura, test_case):
     num_contexts = len(prediction["context"])
     t_retrieval = prediction["retrieval_ms"]
     t_generation = prediction["generation_ms"]
-    print(f"  [AURORA] {num_contexts} blocks | Retrieval: {t_retrieval:.1f}ms | LLM Gen: {t_generation/1000:.1f}s")
+    print(f"  [AURORA] {num_contexts} blocks | Retrieval: {t_retrieval:.1f}ms | LLM Gen: {t_generation / 1000:.1f}s")
 
     # -- Step 2: Grade with LLM-as-a-Judge ---------------------------------
     scores = evaluate_prediction(prediction)
@@ -82,7 +84,7 @@ def test_auragraph_evaluation(aura, test_case):
     ans_score = scores["answer_relevance"]["score"]
     overall = scores["overall_score"]
 
-    print(f"  [SCORES] Judging Time: {t_judging/1000:.1f}s")
+    print(f"  [SCORES] Judging Time: {t_judging / 1000:.1f}s")
     ctx_r = scores["context_relevance"]["reason"]
     fth_r = scores["faithfulness"]["reason"]
     ans_r = scores["answer_relevance"]["reason"]
@@ -92,23 +94,25 @@ def test_auragraph_evaluation(aura, test_case):
     print(f"    Overall: {overall:.3f}")
 
     # -- Step 3: Cache result for final report -----------------------------
-    RESULTS_CACHE.append({
-        "id": tc_id,
-        "category": category,
-        "query": query,
-        "num_contexts": num_contexts,
-        "t_retrieval_ms": t_retrieval,
-        "t_generation_ms": t_generation,
-        "t_judging_ms": t_judging,
-        "context_relevance": ctx_score,
-        "faithfulness": faith_score,
-        "answer_relevance": ans_score,
-        "overall": overall,
-        "ctx_reason": scores["context_relevance"]["reason"],
-        "faith_reason": scores["faithfulness"]["reason"],
-        "ans_reason": scores["answer_relevance"]["reason"],
-        "response_preview": prediction["response"][:200],
-    })
+    RESULTS_CACHE.append(
+        {
+            "id": tc_id,
+            "category": category,
+            "query": query,
+            "num_contexts": num_contexts,
+            "t_retrieval_ms": t_retrieval,
+            "t_generation_ms": t_generation,
+            "t_judging_ms": t_judging,
+            "context_relevance": ctx_score,
+            "faithfulness": faith_score,
+            "answer_relevance": ans_score,
+            "overall": overall,
+            "ctx_reason": scores["context_relevance"]["reason"],
+            "faith_reason": scores["faithfulness"]["reason"],
+            "ans_reason": scores["answer_relevance"]["reason"],
+            "response_preview": prediction["response"][:200],
+        }
+    )
 
     # -- Step 4: Assertions ------------------------------------------------
     assert ctx_score >= MIN_CONTEXT_RELEVANCE
@@ -118,6 +122,7 @@ def test_auragraph_evaluation(aura, test_case):
 
 
 # --- Report Generation (runs after all tests) --------------------------------
+
 
 @pytest.fixture(scope="session", autouse=True)
 def generate_report(request):
@@ -133,10 +138,20 @@ def generate_report(request):
 
         # --- CSV Report ----------------------------------------------------
         fieldnames = [
-            "id", "category", "query", "num_contexts", 
-            "t_retrieval_ms", "t_generation_ms", "t_judging_ms",
-            "context_relevance", "faithfulness", "answer_relevance",
-            "overall", "ctx_reason", "faith_reason", "ans_reason",
+            "id",
+            "category",
+            "query",
+            "num_contexts",
+            "t_retrieval_ms",
+            "t_generation_ms",
+            "t_judging_ms",
+            "context_relevance",
+            "faithfulness",
+            "answer_relevance",
+            "overall",
+            "ctx_reason",
+            "faith_reason",
+            "ans_reason",
             "response_preview",
         ]
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
@@ -161,11 +176,11 @@ def generate_report(request):
         print("=" * 70)
         print(f"  Date           : {timestamp}")
         print(f"  Test Cases     : {n}")
-        print(f"  Passed         : {passed}/{n} ({passed/n*100:.0f}%)")
+        print(f"  Passed         : {passed}/{n} ({passed / n * 100:.0f}%)")
         print("  -------------------------------------")
         print(f"  Avg Retrieval  : {avg_t_ret:.2f} ms")
-        print(f"  Avg LLM Gen    : {avg_t_gen/1000:.2f} s")
-        print(f"  Avg Judging    : {avg_t_jud/1000:.2f} s")
+        print(f"  Avg LLM Gen    : {avg_t_gen / 1000:.2f} s")
+        print(f"  Avg Judging    : {avg_t_jud / 1000:.2f} s")
         print("  -------------------------------------")
         print(f"  Ctx Relevance  : {avg_ctx:.3f}")
         print(f"  Faithfulness   : {avg_faith:.3f}")
@@ -194,4 +209,3 @@ def generate_report(request):
         print("=" * 70)
 
     request.addfinalizer(_write)
-

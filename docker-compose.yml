@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  auragraph-service:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      # Expose environment variables if you want to swap to Kuzu or Neo4j
+      - AURA_DB_PROVIDER=sqlite
+      # Ollama needs to resolve to host if running locally, or use a container network
+      - AURA_OLLAMA_URL=http://host.docker.internal:11434
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus

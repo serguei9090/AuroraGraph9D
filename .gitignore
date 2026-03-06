@@ -150,9 +150,20 @@ cython_debug/
 
 # AuroraGraph9D DB
 *.db
-
+auragraph_graph
+userTest/auragraph_graph
+userTest/auragraph_graph.wal
+test_output.txt
 #test Dataset
 *.pdf
 
 # Evaluation reports (generated)
 reports/
+# Rust/Windows build artifacts
+*.pdb
+*.pyd
+*.exp
+*.lib
+
+# userTest generated reports
+userTest/report_time.md
