@@ -11,7 +11,17 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from auragraph.core.engine import AuroraGraphEngine  # noqa: E402
 from auragraph.db.sqlite import SQLiteFTS5DB
-from auragraph.providers.llm.ollama import OllamaProvider
+from auragraph.providers.llm.base import BaseLLMProvider
+
+
+class MockLLMProvider(BaseLLMProvider):
+    """Fallback mock for headless CI environments."""
+
+    def generate(self, prompt: str, system_prompt: str, stream: bool = False):
+        if stream:
+            yield "Mock response"
+        return "Mock response"
+
 
 GOLDEN_DATASET_PATH = os.path.join(os.path.dirname(__file__), "golden_dataset.json")
 TEST_DOCS_DIR = os.path.join(os.path.dirname(__file__), "test_docs")
@@ -48,7 +58,17 @@ def aura():
     else:
         db_provider = SQLiteFTS5DB(db_path=EVAL_DB_PATH)
 
-    llm_provider = OllamaProvider(model_name=config.AURA_MODEL)
+    try:
+        # Check if ollama is actually installed
+        import ollama  # noqa: F401
+
+        from auragraph.providers.llm.ollama import OllamaProvider
+
+        llm_provider = OllamaProvider(model_name=config.AURA_MODEL)
+    except ImportError:
+        print("\n[!] 'ollama' package missing. Using MockLLMProvider for tests.")
+        llm_provider = MockLLMProvider()
+
     engine = AuroraGraphEngine(db=db_provider, llm=llm_provider)
 
     # Ingest our controlled test documents

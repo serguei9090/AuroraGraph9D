@@ -12,8 +12,6 @@ Each metric is scored 0.0 → 1.0 with a written justification.
 import json
 import re
 
-import ollama
-
 # The model used as a judge — intentionally different from the generator
 # to avoid self-evaluation bias. Switch to a stronger model if available.
 JUDGE_MODEL = "llama3.1:8b"
@@ -21,15 +19,24 @@ JUDGE_MODEL = "llama3.1:8b"
 
 def _ask_judge(prompt: str) -> dict:
     """Send a structured prompt to the judge LLM and parse the JSON result."""
-    resp = ollama.generate(
-        model=JUDGE_MODEL,
-        prompt=prompt,
-        system=(
-            "You are a strict AI evaluation judge. Respond ONLY with valid "
-            "JSON matching the requested schema. No markdown, no commentary."
-        ),
-        stream=False,
-    )
+    try:
+        import ollama
+    except ImportError:
+        return {"score": 0.0, "reason": "Evaluator Error: 'ollama' package not installed."}
+
+    try:
+        resp = ollama.generate(
+            model=JUDGE_MODEL,
+            prompt=prompt,
+            system=(
+                "You are a strict AI evaluation judge. Respond ONLY with valid "
+                "JSON matching the requested schema. No markdown, no commentary."
+            ),
+            stream=False,
+        )
+    except Exception as e:
+        return {"score": 0.0, "reason": f"Judge Error: {e}"}
+
     raw = resp["response"].strip()
 
     # Attempt to extract JSON from the response

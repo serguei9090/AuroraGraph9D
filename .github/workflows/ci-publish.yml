@@ -38,6 +38,8 @@ jobs:
 
       - name: Build Rust extension in place
         run: uv run maturin develop --release
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: 1
 
       - name: Run test suite with coverage
         run: uv run pytest --cov=auragraph --cov-report=xml tests/
@@ -64,6 +66,8 @@ jobs:
 
       - name: Build wheels with Maturin
         uses: PyO3/maturin-action@v1
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: 1
         with:
           command: build
           # Build ABI3 wheels compatible with Python 3.11+

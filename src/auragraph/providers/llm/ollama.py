@@ -1,5 +1,3 @@
-import ollama
-
 from auragraph.providers.llm.base import BaseLLMProvider
 
 
@@ -11,9 +9,14 @@ class OllamaProvider(BaseLLMProvider):
     def __init__(self, model_name: str):
         self.model_name = model_name
         try:
+            import ollama
+
             # Quick check if Ollama is running and has the model
             # This is non-blocking but ensures we don't hang later
             ollama.show(model_name)
+        except ImportError:
+            # We don't crash here; we'll catch it in generate()
+            pass
         except Exception as e:
             print(f"[!] Ollama Model Warning: Could not find or access '{model_name}'.")
             print(f"    Error: {e}")
@@ -26,6 +29,11 @@ class OllamaProvider(BaseLLMProvider):
         Generates text using the local Ollama instance.
         """
         try:
+            import ollama  # noqa: F401
+        except ImportError:
+            return "Error: 'ollama' package not installed. Run `pip install ollama` or `uv sync --extra ollama`."
+
+        try:
             if stream:
                 return self._generate_stream(prompt, system_prompt)
             else:
@@ -34,6 +42,8 @@ class OllamaProvider(BaseLLMProvider):
             return f"Error connecting to LLM: {e}"
 
     def _generate_sync(self, prompt: str, system_prompt: str) -> str:
+        import ollama
+
         resp = ollama.generate(model=self.model_name, prompt=prompt, system=system_prompt, stream=False)
         return resp["response"]
 
@@ -41,6 +51,8 @@ class OllamaProvider(BaseLLMProvider):
         """
         Generator yielding text chunks for streaming UIs.
         """
+        import ollama
+
         try:
             resp = ollama.generate(model=self.model_name, prompt=prompt, system=system_prompt, stream=True)
             for chunk in resp:
