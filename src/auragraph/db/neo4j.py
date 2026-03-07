@@ -7,7 +7,7 @@ from auragraph.db.base import BaseGraphDB
 
 class Neo4jDB(BaseGraphDB):
     """
-    Experimental 10D Graph Database using Neo4j.
+    Experimental Graph Database using Neo4j.
     Supports Cypher traversals, Full-Text indexing, and preparing for Graph Laplacian scoring.
     """
 
@@ -81,7 +81,7 @@ class Neo4jDB(BaseGraphDB):
             except Exception as e:
                 print(f"[!] Error inserting chunk: {e}")
 
-        # 2. Extract Triples (10D Synapse)
+        # 2. Extract Triples (Synapse)
         if triples:
             triple_query = """
             MATCH (d:Document {filename: $filename})-[:HAS_CHUNK]->(c:Chunk {content: $content})

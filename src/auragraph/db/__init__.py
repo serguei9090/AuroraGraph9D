@@ -10,8 +10,9 @@ Supported backends:
 """
 
 from auragraph.db.base import BaseGraphDB
-from auragraph.db.kuzu import KuzuDB
-from auragraph.db.neo4j import Neo4jDB
-from auragraph.db.sqlite import SQLiteFTS5DB
 
-__all__ = ["BaseGraphDB", "SQLiteFTS5DB", "KuzuDB", "Neo4jDB"]
+# We avoid top-level imports of KuzuDB, Neo4jDB, etc. to support optional dependencies.
+# Users should import them directly from their modules:
+#   from auragraph.db.kuzu import KuzuDB
+
+__all__ = ["BaseGraphDB"]

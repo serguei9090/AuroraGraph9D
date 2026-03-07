@@ -56,6 +56,7 @@ def large_aura():
     return engine
 
 
+@pytest.mark.evaluation
 def test_large_file_retrieval_speed(large_aura):
     """
     Queries for a very specific phrase buried inside the massive 5.5MB

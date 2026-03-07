@@ -3,7 +3,7 @@ import os
 import fitz
 
 try:
-    import auragraph_core
+    from auragraph import auragraph_core
 except ImportError:
     print("[!] Failed to import Rust `auragraph_core`. Please run `uv tool run maturin develop`.")
     raise

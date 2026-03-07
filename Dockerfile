@@ -2,7 +2,9 @@
 FROM rust:1.82-slim AS builder
 
 # Install build dependencies for pyo3 and maturin
-RUN apt-get update && apt-get install -y python3-dev python3-pip python3.11-venv build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-dev python3-pip python3.11-venv build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # We will use uv inside the container to build
 RUN pip install --break-system-packages uv maturin
@@ -21,6 +23,9 @@ RUN maturin build --release --out dist
 # Stage 2: Runtime Environment
 FROM python:3.11-slim AS runtime
 
+# Create a non-root user and group
+RUN groupadd -r auragraph && useradd -r -g auragraph auragraph
+
 WORKDIR /app
 
 # Install uv for fast dependency resolution in runtime
@@ -33,6 +38,9 @@ COPY --from=builder /build/dist/*.whl /app/
 # Note: we also add uvicorn to run the FastAPI app
 RUN uv pip install --system /app/*.whl uvicorn
 
+# Create data directory and change ownership of the app directory so the new user can write
+RUN mkdir -p /app/data && chown -R auragraph:auragraph /app
+
 # Set environment variables for production default
 ENV AURA_DB_PROVIDER="sqlite"
 ENV DEFAULT_DB_PATH="/app/data/auragraph.db"
@@ -40,6 +48,9 @@ ENV AURA_MODEL="llama3-8b"
 
 # Expose FastAPI port
 EXPOSE 8000
+
+# Switch to the non-root user
+USER auragraph
 
 # Run the FastAPI server natively
 CMD ["uvicorn", "auragraph.app:app", "--host", "0.0.0.0", "--port", "8000"]

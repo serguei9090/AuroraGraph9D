@@ -1,6 +1,6 @@
 # AuroraGraph: PyPI Publishing Roadmap 📦
 
-This guide outlines the steps required to transform the AuroraGraph 10D codebase into a publishable Python library on PyPI.
+This guide outlines the steps required to transform the AuroraGraph codebase into a publishable Python library on PyPI.
 
 ---
 
@@ -40,7 +40,7 @@ Since we have a Rust core, we use **Maturin** to build and publish the wheel.
     build-backend = "maturin"
 
     [project]
-    name = "auragraph-10d"
+    name = "auragraph"
     dynamic = ["version"]
     description = "Deterministic Knowledge Graph RAG with Rust Core"
     dependencies = [

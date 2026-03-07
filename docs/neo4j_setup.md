@@ -39,7 +39,7 @@ Because Neo4j and SQLite are completely separate datasets, you must re-ingest yo
 uv run run.py ingest tests/test_docs
 ```
 
-### 4. Visualize the 10D Graph!
+### 4. Visualize the Graph!
 Once ingested, open your browser to **http://localhost:7474**.
 Login with:
 - User: `neo4j`

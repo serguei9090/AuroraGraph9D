@@ -32,6 +32,11 @@ class BaseGraphDB(ABC):
         pass
 
     @abstractmethod
+    def delete_document(self, filename: str) -> None:
+        """Deletes a document and all its associated chunks/relationships."""
+        pass
+
+    @abstractmethod
     def search(
         self,
         query_terms: List[str],

@@ -1,4 +1,4 @@
-# Contributing to AuroraGraph 10D
+# Contributing to AuroraGraph
 
 Thank you for your interest in contributing! This guide will help you get set up.
 

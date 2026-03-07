@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **AuroraGraph 10D** are documented here.
+All notable changes to **AuroraGraph** are documented here.
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
@@ -12,6 +12,17 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic V
 - PyPI publishing infrastructure (Maturin cross-compilation, GitHub Actions).
 - `auragraph` CLI entry point (`auragraph ingest`, `auragraph query`).
 - Optional-dependency extras (`sqlite`, `kuzu`, `neo4j`, `embeddings`, `pdf`, `mcp`, `viz`, `all`).
+- **FastEmbed Provider**: Integrated `FastEmbedProvider` for memory-efficient CPU and GPU-accelerated embeddings using `fastembed`.
+- **Kùzu Database Provider**: Implemented `KuzuDB` backend class to support Kùzu embedded graph database capabilities and Cypher queries.
+- **Pre-commit Hooks**: Configured `lefthook` and `ruff` to enforce Python code quality and formatting standards.
+
+### Changed
+- Improved `chat_test.py` script with execution timing to measure ingestion and query performance.
+- Modified test scripts to gracefully handle missing relevant information dynamically to minimize hallucination.
+
+### Fixed
+- Fixed `AttributeError: 'NoneType' object has no attribute 'generate'` in `chat_test.py` during empty search results.
+- Resolved endless hangs in testing scripts when no context was retrieved from the database.
 
 ---
 

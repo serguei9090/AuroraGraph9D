@@ -45,6 +45,7 @@ def _load_golden():
         return json.load(f)
 
 
+@pytest.mark.evaluation
 @pytest.mark.parametrize(
     "test_case",
     _load_golden(),

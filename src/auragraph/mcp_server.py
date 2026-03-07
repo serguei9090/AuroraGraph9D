@@ -16,7 +16,7 @@ engine = AuroraGraphEngine()
 
 
 class ParallelQueryInput(BaseModel):
-    """Input model for performing multiple parallel queries against the 10D Graph."""
+    """Input model for performing multiple parallel queries against the Graph."""
 
     model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True)
 
@@ -31,7 +31,7 @@ class ParallelQueryInput(BaseModel):
 @mcp.tool(
     name="auragraph_parallel_query",
     annotations={
-        "title": "AuroraGraph 10D Parallel Query Expansion",
+        "title": "AuroraGraph Parallel Query Expansion",
         "readOnlyHint": True,
         "destructiveHint": False,
         "idempotentHint": True,
@@ -40,7 +40,7 @@ class ParallelQueryInput(BaseModel):
 )
 async def auragraph_parallel_query(params: ParallelQueryInput) -> str:
     """
-    Execute multiple semantic queries simultaneously against the AuroraGraph 10D engine.
+    Execute multiple semantic queries simultaneously against the AuroraGraph engine.
 
     This tool takes a minimum of 1 and maximum of 5 query strings. It executes
     them concurrently using the backend LLM orchestrator and Tri-Modal Graph DB,

@@ -23,13 +23,27 @@ from auragraph.providers.embeddings.base import BaseEmbeddingProvider
 
 
 def _check_fastembed_gpu() -> bool:
-    """Returns True if fastembed-gpu (CUDA) is installed and available."""
+    """
+    Returns True if CUDA is usable via onnxruntime-gpu.
+
+    On Windows, cuDNN DLLs are NOT automatically loaded by onnxruntime.
+    Since ORT 1.19+, calling `onnxruntime.preload_dlls()` ensures ORT
+    locates the CUDA/cuDNN libraries from the CUDA Toolkit path before
+    checking available providers. Without this, CUDAExecutionProvider
+    appears in get_available_providers() but fails with LoadLibrary error 126
+    at session creation time.
+
+    Ref: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#preload-dlls
+    """
     try:
-        # fastembed-gpu exposes CUDAExecutionProvider in onnxruntime
         import onnxruntime as ort
 
+        # Preload CUDA/cuDNN DLLs from the toolkit path (ORT 1.19+ feature)
+        if hasattr(ort, "preload_dlls"):
+            ort.preload_dlls()
+
         return "CUDAExecutionProvider" in ort.get_available_providers()
-    except ImportError:
+    except (ImportError, Exception):
         return False
 
 
@@ -62,7 +76,7 @@ def _resolve_providers(requested: str) -> list[str]:
             print("\n[FastEmbed] ⚠️  CPU-only fastembed detected — GPU not available.")
             print("[FastEmbed]    To enable NVIDIA GPU acceleration:")
             print("[FastEmbed]    pip uninstall fastembed && pip install fastembed-gpu")
-            print("[FastEmbed]    Or as a library: pip install auragraph-10d[cuda]")
+            print("[FastEmbed]    Or as a library: pip install auragraph[cuda]")
             print("[FastEmbed]    Falling back to CPU. Set AURA_DEVICE=cpu to suppress.\n")
         except ImportError:
             print("\n[FastEmbed] ⚠️  fastembed is not installed.")

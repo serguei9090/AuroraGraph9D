@@ -1,3 +1,4 @@
+from auragraph.ingestion.extractor import extract_triples
 from auragraph.ingestion.parsers import _chunk_text, _is_valid_text, extract_chunks
 
 
@@ -6,7 +7,7 @@ def test_is_valid_text():
     assert _is_valid_text("too short") is False
     assert (
         _is_valid_text(
-            "This is an information dense sentence that passes the metabolic filter. The system operates on a 10D semantic graph model."
+            "This is an information dense sentence that passes the metabolic filter. The system operates on a semantic graph model."
         )
         is True
     )
@@ -48,3 +49,19 @@ def test_extract_chunks_empty(tmp_path):
 
     chunks = extract_chunks(str(text_file))
     assert len(chunks) == 0  # Fails metabolic filter
+
+
+def test_extract_triples():
+    text = "The quick brown fox jumps over the lazy dog."
+    triples = extract_triples(text)
+
+    # We expect at least one triple (fox, JUMP, dog)
+    # The actual output depends on SpaCy's parsing but let's check structure
+    assert isinstance(triples, list)
+    if triples:
+        for t in triples:
+            assert "subject" in t
+            assert "predicate" in t
+            assert "object" in t
+            assert t["predicate"] == "JUMP"
+

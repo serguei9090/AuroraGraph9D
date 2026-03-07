@@ -66,7 +66,7 @@ def _resolve_device(requested: str) -> str:
                 print("[Embedder]    pip install torch --index-url https://download.pytorch.org/whl/cu121")
                 print("[Embedder]")
                 print("[Embedder]    ── Or, if using this as an installed library: ──────────────────")
-                print("[Embedder]    pip install auragraph-10d[cuda]")
+                print("[Embedder]    pip install auragraph[cuda]")
                 print("[Embedder]    ──────────────────────────────────────────────────────────────")
                 print("[Embedder]    Falling back to CPU. Set AURA_DEVICE=cpu to suppress this warning.\n")
             elif requested == "cuda":
@@ -86,7 +86,7 @@ def _resolve_device(requested: str) -> str:
 
     except ImportError:
         print("[Embedder] ⚠️  PyTorch is not installed. Embeddings will not be available.")
-        print("[Embedder]    Install with: pip install auragraph-10d[embeddings]")
+        print("[Embedder]    Install with: pip install auragraph[embeddings]")
 
     return "cpu"
 
@@ -112,9 +112,9 @@ class LocalEmbeddingProvider(BaseEmbeddingProvider):
     Or pass --device <value> to the ingest_knowledge.py CLI script.
 
     Library users install GPU support via extras:
-        pip install auragraph-10d[cuda]     NVIDIA GPU
-        pip install auragraph-10d[mps]      Apple Silicon GPU
-        pip install auragraph-10d[embeddings]  CPU-only (default)
+        pip install auragraph[cuda]     NVIDIA GPU
+        pip install auragraph[mps]      Apple Silicon GPU
+        pip install auragraph[embeddings]  CPU-only (default)
     """
 
     def __init__(self, model_name: str = "all-MiniLM-L6-v2", device: str | None = None):

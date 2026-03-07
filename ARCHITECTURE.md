@@ -1,10 +1,10 @@
-# AuroraGraph 10D: Deep Architecture 🧠
+# AuroraGraph: Deep Architecture 🧠
 
-This document outlines the internal mechanics of the AuroraGraph 10D engine, focusing on the ingestion pipeline, the Tri-Modal graph strategy, and the Rust-powered core.
+This document outlines the internal mechanics of the AuroraGraph engine, focusing on the ingestion pipeline, the Tri-Modal graph strategy, and the Rust-powered core.
 
 ---
 
-## 🏎️ The Ingestion Pipeline (10D Synoptic Flow)
+## 🏎️ The Ingestion Pipeline (Graph Synoptic Flow)
 
 AuroraGraph doesn't just "store" text; it filters and structures it for deterministic reasoning.
 
@@ -61,13 +61,13 @@ graph LR
     User[User] --> Agent[AI Agent / Claude]
     Agent --> MCP[MCP Server]
     subgraph AuroraGraph
-        MCP --> Engine[10D Engine]
+        MCP --> Engine[Graph Engine]
         Engine --> Data[(Knowledge Graph)]
     end
 ```
 
 ### Key Tools exposed via MCP:
-- `auragraph_query`: Execute a deterministic 10D search.
+- `auragraph_query`: Execute a deterministic Graph search.
 - `auragraph_parallel_query`: Expand queries into multiple sub-nodes for exhaustive retrieval.
 
 ---

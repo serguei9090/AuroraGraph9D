@@ -1,4 +1,3 @@
-import datetime
 import os
 import re
 import time
@@ -12,9 +11,11 @@ from auragraph.db.sqlite import SQLiteFTS5DB
 from auragraph.ingestion.extractor import extract_triples
 from auragraph.ingestion.parsers import extract_chunks
 from auragraph.providers.embeddings.base import BaseEmbeddingProvider
-from auragraph.providers.embeddings.local import LocalEmbeddingProvider
+
+# LocalEmbeddingProvider imported lazily in __init__
 from auragraph.providers.llm.base import BaseLLMProvider
-from auragraph.providers.llm.ollama import OllamaProvider
+
+# OllamaProvider imported lazily in __init__
 
 # Define Prometheus Metrics Let's track retrieval and LLM generation
 RETRIEVAL_LATENCY = Histogram(
@@ -32,7 +33,7 @@ QUERY_COUNTER = Counter("auragraph_queries_total", "Total engine queries execute
 
 class AuroraGraphEngine:
     """
-    The central orchestrator for the AuroraGraph 10D Knowledge Graph.
+    The central orchestrator for the AuroraGraph Knowledge Graph.
     Uses Dependency Injection so the Database and LLM can be swapped
     without changing the core retrieval and reasoning logic.
     """
@@ -57,22 +58,37 @@ class AuroraGraphEngine:
             else:
                 self.db = SQLiteFTS5DB(config.DEFAULT_DB_PATH)
 
-        self.llm = llm or OllamaProvider(config.AURA_MODEL)
+        if llm:
+            self.llm = llm
+        else:
+            try:
+                from auragraph.providers.llm.ollama import OllamaProvider
 
-        # Instantiate embedder only if desired (defaults to Local MiniLM)
+                self.llm = OllamaProvider(config.AURA_MODEL)
+            except ImportError:
+                self.llm = None
+
+        # Instantiate embedder only if desired (defaults to FastEmbed, fallback to Local MiniLM)
         self.embedder = embedder
         if not self.embedder:
             try:
-                self.embedder = LocalEmbeddingProvider()
-            except Exception as e:
-                print(f"[!] Could not init local embedder: {e}")
+                # 1. Try FastEmbed (Fastest & Officially Supported)
+                from auragraph.providers.embeddings.fastembed_provider import FastEmbedProvider
+
+                self.embedder = FastEmbedProvider()
+            except ImportError:
+                self.embedder = None
+
+    def close(self) -> None:
+        """Explicitly release resources (DB connections, etc.)."""
+        if hasattr(self, "db") and hasattr(self.db, "close"):
+            self.db.close()
 
     def ingest_folder(self, folder_path: str):
         """
         Scans a folder and ingests files into the provided GraphDB.
         """
         if not os.path.exists(folder_path):
-            print(f"[!] Folder path does not exist: {folder_path}")
             return
 
         files = [
@@ -82,10 +98,6 @@ class AuroraGraphEngine:
             if f.lower().endswith((".pdf", ".txt", ".md"))
         ]
         start_time = time.time()
-
-        print(f"[*] AURORAGRAPH INGESTION START | {datetime.datetime.now().strftime('%H:%M:%S')}")
-        print(f"[*] Found {len(files)} supported files.")
-
         new_files = 0
         skipped_files = 0
 
@@ -103,12 +115,12 @@ class AuroraGraphEngine:
                 if self.embedder:
                     embedding = self.embedder.embed_text(chunk["content"])
 
-                # 2. Extract Triples (10D Synapse routing)
+                # 2. Extract Triples (Synapse routing)
                 triples = []
                 try:
                     triples = extract_triples(chunk["content"])
-                except Exception as e:
-                    print(f"[!] Triple extraction error on {fname}: {e}")
+                except Exception:
+                    pass
 
                 # 3. Insert Hybrid Data
                 self.db.insert_document(
@@ -122,34 +134,32 @@ class AuroraGraphEngine:
             if chunks:
                 new_files += 1
 
-        print("[*] INGESTION COMPLETE:")
-        print(f"    - Processed: {new_files} new files")
-        print(f"    - Skipped: {skipped_files} cached files")
-        print(f"    - Time taken: {time.time() - start_time:.2f} seconds.")
+        return {"processed": new_files, "skipped": skipped_files, "time_taken_sec": round(time.time() - start_time, 2)}
 
-    def query(self, user_query: str, stream: bool = True):
+    def query(
+        self,
+        user_query: str,
+        stream: bool = True,
+        custom_prompt: Optional[str] = None,
+        custom_system_prompt: Optional[str] = None,
+    ) -> dict:
         """
-        Console-friendly JIT Query using the LLM Provider.
+        Legacy wrapper around predict. Please use predict() for programmatic response.
         """
-        print(f"\n[*] Querying Graph Index for: '{user_query}'...")
-        prediction = self.predict(user_query, stream=stream)
+        return self.predict(
+            user_query,
+            stream=stream,
+            custom_prompt=custom_prompt,
+            custom_system_prompt=custom_system_prompt,
+        )
 
-        if stream:
-            print("\n" + "=" * 80)
-            print("AURORAGRAPH 10D AUDIT")
-            print("=" * 80)
-
-            # If the provider supports streaming, prediction["response"] is a generator
-            for chunk in prediction["response"]:
-                # Print token-by-token directly to console
-                print(chunk, end="", flush=True)
-            print("\n" + "=" * 80)
-        else:
-            print("=" * 80 + "\nAURORAGRAPH 10D AUDIT\n" + "=" * 80)
-            print(prediction["response"])
-            print("\n" + "=" * 80)
-
-    def predict(self, user_query: str, stream: bool = False) -> dict:
+    def predict(
+        self,
+        user_query: str,
+        stream: bool = False,
+        custom_prompt: Optional[str] = None,
+        custom_system_prompt: Optional[str] = None,
+    ) -> dict:
         """
         Programmatic graph traversal and LLM generation.
         If stream is True, 'response' in the dict will be a Python Generator.
@@ -198,7 +208,7 @@ class AuroraGraphEngine:
         if self.embedder:
             query_embedding = self.embedder.embed_text(user_query)
 
-        # 2. Database Retrieval (Hybrid Graph Search in Phase 3)
+        # 2. Database Retrieval
         with RETRIEVAL_LATENCY.time():
             results = self.db.search(
                 terms,
@@ -211,6 +221,7 @@ class AuroraGraphEngine:
 
         if not results:
             empty_result["retrieval_ms"] = round(retrieval_ms, 2)
+            empty_result["response"] = "The provided documents do not contain information relevant to your query."
             return empty_result
 
         # 2. Evidence Formatting
@@ -222,27 +233,44 @@ class AuroraGraphEngine:
 
         full_evidence = "\n".join(evidence_blocks)
 
-        prompt = f"""
-        You are the AuroraGraph 10D Audit AI.
+        if custom_prompt:
+            try:
+                prompt = custom_prompt.format(query=user_query, evidence=full_evidence)
+            except KeyError:
+                # Fallback if the user forgets to include {query} or {evidence} format blocks
+                prompt = custom_prompt + f"\n\nQUERY: {user_query}\n\nEVIDENCE:\n{full_evidence}"
+        else:
+            prompt = f"""
+            You are the AuroraGraph Audit AI.
 
-        USER QUERY: {user_query}
+            USER QUERY: {user_query}
 
-        DATABASE EVIDENCE (Keywords are highlighted with ** **):
-        {full_evidence}
+            DATABASE EVIDENCE (Keywords are highlighted with ** **):
+            {full_evidence}
 
-        TASK 1: Extract the specific improvements, changes, or facts requested.
-        TASK 2: Synthesize a clear report. Cite the Source Filename and Page Number.
+            TASK 1: Extract the specific improvements, changes, or facts requested.
+            TASK 2: Synthesize a clear report. Cite the Source Filename and Page Number.
 
-        CRITICAL RULE: If the evidence does not specifically mention the exact
-        technologies or concepts in the user query, you MUST state:
-        "The provided documents do not contain information about [Topic]."
-        DO NOT hallucinate or substitute technologies.
-        """
+            CRITICAL RULE: If the evidence does not specifically mention the exact
+            technologies or concepts in the user query, you MUST state:
+            "The provided documents do not contain information about [Topic]."
+            DO NOT hallucinate or substitute technologies.
+            """
 
-        sys_prompt = "You are a precise technical auditor. Rely STRICTLY on the provided evidence. If it's not in the evidence, say you don't know."
+        sys_prompt = (
+            custom_system_prompt
+            or "You are a precise technical auditor. Rely STRICTLY on the provided evidence. If it's not in the evidence, say you don't know."
+        )
 
         # 3. LLM Generation
         start_gen = time.time()
+
+        if not self.llm:
+            raise ValueError(
+                "LLM Provider is not initialized. "
+                "Ensure 'ollama' is installed and running, or pass an LLM provider to the engine. "
+                "You can install all dependencies with 'uv sync --all-extras'."
+            )
 
         if not stream:
             with GENERATION_LATENCY.time():

@@ -1,10 +1,10 @@
-# AuroraGraph10D: Architecture & Codebase Audit (Proposed Improvements)
+# AuroraGraphGraph: Architecture & Codebase Audit (Proposed Improvements)
 
 Following a comprehensive audit of `src/main.py` and the evaluation results, we have identified several architectural bottlenecks and opportunities to evolve this experimental proof-of-concept into a robust, production-ready reasoning engine.
 
-## 1. Implement True "10D Synapse" Knowledge Graphs
+## 1. Implement True "Synapse" Knowledge Graphs
 **Current State:** 
-The application claims "10D Synapses" and "Metabolic Filtering", but the underlying database (`auragraph_jit.db`) is currently a flat, 2D SQLite table running an FTS5 BM25 keyword search.
+The application claims "Synapses" and "Metabolic Filtering", but the underlying database (`auragraph_jit.db`) is currently a flat, 2D SQLite table running an FTS5 BM25 keyword search.
 **Proposed Improvement:**
 To achieve actual 10-dimensional graph traversal:
 - Migrate to a native graph database structure (e.g., using `NetworkX` serialized to SQLite, or bridging to Neo4j/NebulaGraph).
@@ -30,7 +30,7 @@ Retrieval relies 100% on FTS5 BM25 exact keyword matching, augmented by Porter S
 **Current State:** 
 The core engine strips hardcoded stop words (`what`, `were`, `done`, `time`, etc.) and performs basic keyword/vector matching. Baking an LLM into the retrieval path makes the library slow and tightly coupled.
 **Proposed Improvement:**
-- **Remove from Core**: Do not force LLM query rewriting inside the database retrieval logic. AuroraGraph should remain a high-speed, agnostic 10D retrieval mechanism.
+- **Remove from Core**: Do not force LLM query rewriting inside the database retrieval logic. AuroraGraph should remain a high-speed, agnostic Graph retrieval mechanism.
 - **MCP Server Logic**: Instead, implement Query Expansion as an instruction prompt or logic step within the future **AuroraGraph MCP Server**. The calling agent analyzing the user's intent should be responsible for parallelizing expanded search queries to the engine (e.g., calling `search("hardware margins")` and `search("revenue drop")` based on its own reasoning).
 
 ## 5. Streaming UI for Generation
@@ -51,14 +51,14 @@ Currently, all text `len(text) > 20` is indiscriminately inserted into the graph
 **Current State:** 
 String operations, stemming, and database queries are currently written purely in Python, which is fine for a PoC but may bottleneck as the graph scales to billions of nodes.
 **Proposed Improvement:**
-- Rewrite the core math, metabolic filtering, and 10D synaptic traversal algorithms in **Rust**, exposing them to Python via PyO3 (similar to how `ruff` or `pydantic-core` is built).
+- Rewrite the core math, metabolic filtering, and Graph synaptic traversal algorithms in **Rust**, exposing them to Python via PyO3 (similar to how `ruff` or `pydantic-core` is built).
 - This ensures the CPU-intensive graph mapping and filtering runs at near bare-metal C-level speeds, keeping the "JIT Engine" truly instantaneous while preserving Python's ease-of-use for the orchestration layers.
 
 ---
 
 ## The Production Roadmap: Step-by-Step Evolution
 
-To move from this experimental PoC to the final production-ready `AuroraGraph10D` system, follow these sequential steps:
+To move from this experimental PoC to the final production-ready `AuroraGraphGraph` system, follow these sequential steps:
 
 ### Phase 1: Architectural Restructuring
 Split the monolithic `main.py` into a proper, modular Python package:
@@ -74,7 +74,7 @@ src/
 
 ### Phase 2: Database Migration Strategy
 We must choose the graph DB based on scale:
-- **Choose Neo4j:** If we prioritize extremely complex multi-hop queries right away and want rich visualization tools (Neo4j Bloom). Best for rapid development of the 10D logic.
+- **Choose Neo4j:** If we prioritize extremely complex multi-hop queries right away and want rich visualization tools (Neo4j Bloom). Best for rapid development of the Graph logic.
 - **Choose NebulaGraph:** If we anticipate distributed, massive-scale data (billions of nodes) from day one and prioritize raw ingestion/retrieval speed.
 - **Action:** Migrate the SQLite writes to `Cypher` (Neo4j) or `nGQL` (NebulaGraph) statements.
 

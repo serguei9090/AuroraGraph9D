@@ -3,9 +3,9 @@ requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "auragraph-10d"
-version = "0.1.0"
-description = "High-Performance 10D Knowledge Graph & Deterministic Reasoning Engine with Rust Core"
+name = "auragraph"
+version = "0.1.1"
+description = "High-Performance Knowledge Graph & Deterministic Reasoning Engine with Rust Core"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
@@ -26,6 +26,16 @@ classifiers = [
     "Topic :: Database",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dependencies = [
+    "python-dotenv>=1.2.2",
+    "prometheus-client>=0.20.0",
+    "fastapi>=0.110.0",
+    "spacy>=3.8.11",
+    "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "pymupdf>=1.27.1",
+    "numpy>=2.0.0",
+    "colorama>=0.4.6",
+]
 
 [project.urls]
 Homepage = "https://github.com/serguei9090/AuroraGraph9D"
@@ -37,48 +47,37 @@ Changelog = "https://github.com/serguei9090/AuroraGraph9D/blob/main/CHANGELOG.md
 auragraph = "auragraph.cli:main"
 
 [project.optional-dependencies]
-# Minimal: SQLite-only mode (fastest install, no heavy deps)
-sqlite = [
-    "python-dotenv>=1.2.2",
-    "prometheus-client>=0.20.0",
-    "fastapi>=0.110.0",
-    "spacy>=3.8.11",
-    "gliner>=0.2.25",
-]
-# Add Kùzu embedded graph support
-kuzu = [
-    "auragraph-10d[sqlite]",
-    "kuzu>=0.11.3",
-    "networkx>=3.6.1",
-]
-# Add Neo4j cluster support
-neo4j = [
-    "auragraph-10d[sqlite]",
-    "neo4j>=6.1.0",
-]
-# PyTorch-based embeddings (CPU, large install ~2GB)
-embeddings = [
-    "sentence-transformers>=5.2.3",
-    "numpy>=2.4.2",
-    "scipy>=1.17.1",
-]
-# Rust+ONNX embeddings (CPU, lightweight ~100MB, recommended)
+# ── Graph Database Backends ────────────────────────────────────────────────────
+# Kùzu: embedded property graph, zero Docker (recommended for local production)
+kuzu = ["kuzu>=0.11.3"]
+# Neo4j: enterprise graph cluster
+neo4j = ["neo4j>=6.1.0"]
+
+# ── Embedding Backends ─────────────────────────────────────────────────────────
+# FastEmbed: Rust+ONNX, lightweight CPU (~100 MB) — recommended default
 fastembed = ["fastembed>=0.4.0"]
-# Rust+ONNX embeddings with NVIDIA GPU — works on Windows out of the box!
-# pip install auragraph-10d[cuda]
+# NVIDIA GPU via FastEmbed (CUDA 12+).
+#   After installing this extra, ALSO run:
+#   pip install onnxruntime-gpu \
+#     --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
 cuda = ["fastembed-gpu>=0.4.0"]
 # Apple Silicon GPU via CoreML (macOS only)
 mps = ["fastembed>=0.4.0"]
-# Add PDF parsing support
-pdf = ["pymupdf>=1.27.1"]
-# MCP agent server
+# PyTorch + sentence-transformers (CPU/GPU, large ~2 GB)
+embeddings = ["sentence-transformers>=5.2.3", "scipy>=1.17.1"]
+
+# ── LLM Providers ──────────────────────────────────────────────────────────────
+ollama = ["ollama>=0.6.1"]
+openai = ["openai>=1.14.0"]
+gemini = ["google-generativeai>=0.4.0"]
+
+# ── Optional Features ──────────────────────────────────────────────────────────
+# MCP agent server (Model Context Protocol)
 mcp = ["mcp>=1.26.0"]
-# Visualization (Plotly + Dash)
-viz = ["plotly>=6.5.2", "dash>=4.0.0"]
-# Full install: everything
+
+# ── Full install ───────────────────────────────────────────────────────────────
 all = [
-    "auragraph-10d[kuzu,neo4j,embeddings,pdf,mcp,viz]",
-    "ollama>=0.6.1",
+    "auragraph[kuzu,neo4j,mcp]",
 ]
 
 [dependency-groups]
@@ -112,4 +111,8 @@ ignore = ["E501", "E701"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+addopts = "-v -m 'not evaluation'"
+markers = [
+    "evaluation: marks tests as evaluation tests that require LLM (slow) and should be run on-demand",
+]
 

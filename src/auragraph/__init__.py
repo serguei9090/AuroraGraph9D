@@ -1,7 +1,7 @@
 """
-AuroraGraph 10D
+AuroraGraph
 ================
-High-Performance 10D Knowledge Graph & Deterministic Reasoning Engine.
+High-Performance Knowledge Graph & Deterministic Reasoning Engine.
 
 Quickstart::
 
@@ -14,7 +14,7 @@ Quickstart::
 GitHub: https://github.com/serguei9090/AuroraGraph9D
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "AuroraGraph Contributors"
 __license__ = "MIT"
 

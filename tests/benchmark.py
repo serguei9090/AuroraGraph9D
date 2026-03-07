@@ -29,7 +29,7 @@ def run_benchmark():
     ]
 
     print("\n" + "=" * 50)
-    print("AURORAGRAPH 10D - PERFORMANCE BENCHMARK")
+    print("AURORAGRAPH Graph - PERFORMANCE BENCHMARK")
     print("=" * 50)
 
     results = []
@@ -70,7 +70,7 @@ def run_benchmark():
     print("=" * 50)
 
     # Save report to markdown
-    report_md = "# AuroraGraph 10D Performance Benchmark\n\n"
+    report_md = "# AuroraGraph Performance Benchmark\n\n"
     report_md += "| Complexity | Retrieval (ms) | LLM Generation (ms) | Total E2E (ms) |\n"
     report_md += "|---|---|---|---|\n"
 

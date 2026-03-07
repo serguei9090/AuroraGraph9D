@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from auragraph.core.config import config
 from auragraph.core.engine import AuroraGraphEngine
 
-app = FastAPI(title="AuroraGraph 10D Service")
+app = FastAPI(title="AuroraGraph Service")
 
 # Expose prometheus metrics at /metrics
 metrics_app = make_asgi_app()
@@ -25,7 +25,7 @@ class QueryRequest(BaseModel):
 @app.post("/query")
 async def query_endpoint(req: QueryRequest):
     """
-    Standard HTTP endpoint for querying the 10D semantic graph.
+    Standard HTTP endpoint for querying the semantic graph.
     """
     prediction = engine.predict(req.query, stream=req.stream)
 

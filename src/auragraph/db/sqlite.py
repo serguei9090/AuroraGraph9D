@@ -62,6 +62,9 @@ class SQLiteFTS5DB(BaseGraphDB):
         )
         self.conn.commit()
 
+    def delete_document(self, filename: str) -> None:
+        pass
+
     def search(
         self,
         query_terms: List[str],
