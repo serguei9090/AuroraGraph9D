@@ -8,6 +8,13 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic V
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-03-07
+
+### Fixed
+- Fixed PyPI upload issue with duplicate files by bumping version to 0.1.2.
+- Fixed PyPI and Python version badges on the `README.md` by matching case-sensitive package names.
+
+## [0.1.1] - 2026-03-07
 ### Added
 - PyPI publishing infrastructure (Maturin cross-compilation, GitHub Actions).
 - `auragraph` CLI entry point (`auragraph ingest`, `auragraph query`).

@@ -39,12 +39,12 @@ Update the version number to reflect your new release. You must update this in *
 ```toml
 [project]
 name = "auragraph"
-version = "0.1.1"  # <-- Update here
+version = "0.1.2"  # <-- Update here
 ```
 
 2. `src/auragraph/__init__.py`
 ```python
-__version__ = "0.1.1" # <-- Update here
+__version__ = "0.1.2" # <-- Update here
 ```
 
 *Optionally: update the `CHANGELOG.md` with release notes.*
@@ -72,12 +72,12 @@ To instantly trigger the build and publish your library to PyPI, simply **create
 
 ```bash
 git add .
-git commit -m "chore: release version 0.1.1"
+git commit -m "chore: release version 0.1.2"
 git push
 
 # Create the release tag and push it
-git tag v0.1.1
-git push origin v0.1.1
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
 Once pushed, go to the **Actions** tab on your GitHub repository. You will see the matrix spinning up 3 environments (Ubuntu, macOS, Windows) to build the Rust `.pyd`/`.so` interfaces. After it compiles, it securely downloads an OIDC token from PyPI and uploads all the cross-platform wheels!

@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "AuroraGraph"
-version = "0.1.1"
+version = "0.1.2"
 description = "High-Performance Knowledge Graph & Deterministic Reasoning Engine with Rust Core"
 readme = "README.md"
 license = { text = "MIT" }
