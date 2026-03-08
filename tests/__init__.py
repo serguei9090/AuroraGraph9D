@@ -1,1 +1,1 @@
-# AuroraGraph9D Evaluation Suite
+# AuroraGraph Evaluation Suite

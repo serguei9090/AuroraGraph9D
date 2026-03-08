@@ -1,5 +1,11 @@
 # AuroraGraph — Library Usage Guide 📚
 
+[![PyPI version](https://img.shields.io/pypi/v/auragraph.svg)](https://pypi.org/project/auragraph/)
+[![Python versions](https://img.shields.io/pypi/pyversions/auragraph.svg)](https://pypi.org/project/auragraph/)
+[![License: MIT](https://img.shields.io/github/license/serguei9090/AuroraGraph.svg)](https://github.com/serguei9090/AuroraGraph/blob/main/LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+
 > **This guide is for end users who installed `auragraph` from PyPI.**  
 > For contributor / development setup, see [README.md](./README.md).
 

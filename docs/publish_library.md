@@ -58,7 +58,7 @@ The absolute best and most modern way to publish to PyPI is using a **Trusted Pu
 2. Fill out the form exactly like this:
    - **PyPI Project Name:** `auragraph` (or whatever you intend to claim if someone took it)
    - **Owner:** Your exact GitHub username (`serguei9090`) or organization.
-   - **Repository name:** Your repo name (`AuroraGraph9D`).
+   - **Repository name:** Your repo name (`AuroraGraph`).
    - **Workflow name:** `publish.yml` (this points to `.github/workflows/publish.yml`).
    - **Environment name:** `pypi` (optional, but highly recommended).
 

@@ -14,8 +14,8 @@ Thank you for your interest in contributing! This guide will help you get set up
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/serguei9090/AuroraGraph9D
-cd AuroraGraph9D
+git clone https://github.com/serguei9090/AuroraGraph
+cd AuroraGraph
 
 # 2. Install all deps including dev group
 uv sync --group dev

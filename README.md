@@ -1,5 +1,14 @@
 # AuroraGraph 🌌
 
+[![PyPI version](https://img.shields.io/pypi/v/auragraph.svg)](https://pypi.org/project/auragraph/)
+[![Python versions](https://img.shields.io/pypi/pyversions/auragraph.svg)](https://pypi.org/project/auragraph/)
+[![License: MIT](https://img.shields.io/github/license/serguei9090/AuroraGraph.svg)](https://github.com/serguei9090/AuroraGraph/blob/main/LICENSE)
+[![Tests](https://github.com/serguei9090/AuroraGraph/actions/workflows/tests.yml/badge.svg)](https://github.com/serguei9090/AuroraGraph/actions/workflows/tests.yml)
+[![Publish to PyPI](https://github.com/serguei9090/AuroraGraph/actions/workflows/publish.yml/badge.svg)](https://github.com/serguei9090/AuroraGraph/actions/workflows/publish.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/serguei9090/AuroraGraph/pulls)
+
+
 > **Disclaimer:** This is a personal learning project created for educational purposes and to explore different code concepts with AI concepts.
 > - **Status:** Personal sandbox / Portfolio piece.
 > - **License:** This project is open-source and available for public educational use under the MIT License.
