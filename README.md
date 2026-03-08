@@ -1,7 +1,7 @@
 # AuroraGraph 🌌
 
-[![PyPI version](https://img.shields.io/pypi/v/auragraph.svg)](https://pypi.org/project/auragraph/)
-[![Python versions](https://img.shields.io/pypi/pyversions/auragraph.svg)](https://pypi.org/project/auragraph/)
+[![PyPI version](https://img.shields.io/pypi/v/AuroraGraph.svg)](https://pypi.org/project/AuroraGraph/)
+[![Python versions](https://img.shields.io/pypi/pyversions/AuroraGraph.svg)](https://pypi.org/project/AuroraGraph/)
 [![License: MIT](https://img.shields.io/github/license/serguei9090/AuroraGraph.svg)](https://github.com/serguei9090/AuroraGraph/blob/main/LICENSE)
 [![Tests](https://github.com/serguei9090/AuroraGraph/actions/workflows/tests.yml/badge.svg)](https://github.com/serguei9090/AuroraGraph/actions/workflows/tests.yml)
 [![Publish to PyPI](https://github.com/serguei9090/AuroraGraph/actions/workflows/publish.yml/badge.svg)](https://github.com/serguei9090/AuroraGraph/actions/workflows/publish.yml)
