@@ -25,6 +25,7 @@ AuroraGraph combines a **Rust-Powered Parser**, **Multi-Dimensional Synaptic Lin
 **What's Next:**
 - **Interactive Web UI:** Build a webpage with an interactive 3D view of the knowledge graph, featuring animations when information is retrieved during a query.
 - **Neo4j Validation:** Conduct comprehensive user testing for the Neo4j database integration (currently implemented but pending user validation).
+- **MCP Server Testing:** Implement comprehensive unit and integration tests for the Model Context Protocol (MCP) server implementation to ensure stable tooling for AI Agents.
 
 ---
 
