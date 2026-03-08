@@ -57,7 +57,7 @@ wheels = [
 ]
 
 [[package]]
-name = "auragraph"
+name = "auroragraph"
 version = "0.1.1"
 source = { editable = "." }
 dependencies = [
@@ -122,7 +122,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "auragraph", extras = ["kuzu", "neo4j", "mcp"], marker = "extra == 'all'" },
+    { name = "auroragraph", extras = ["kuzu", "neo4j", "mcp"], marker = "extra == 'all'" },
     { name = "colorama", specifier = ">=0.4.6" },
     { name = "fastapi", specifier = ">=0.110.0" },
     { name = "fastembed", marker = "extra == 'fastembed'", specifier = ">=0.4.0" },
